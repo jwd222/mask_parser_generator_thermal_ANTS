@@ -1,0 +1,9 @@
+thirdparty
+output
+
+# image files
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.tif
