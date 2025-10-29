@@ -1,4 +1,5 @@
-thirdparty
+thirdparty/sam2/*
+!thirdparty/sam2/.git
 output
 
 # image files
