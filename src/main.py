@@ -333,6 +333,7 @@ class ImageAnnotator(QWidget):
             
             # Set image in SAM2
             self.sam_wrapper.set_image(self.img_rgb)
+            image_name = Path(self.image_path).stem
             
             # Predict masks
             masks, scores, logits = self.sam_wrapper.predict_with_points(
@@ -356,7 +357,7 @@ class ImageAnnotator(QWidget):
                 best_mask = self.sam_wrapper.clean_mask(best_mask, kernel_size=5, min_area=100)
             
             # Create output directory
-            output_dir = os.path.join("output", os.path.splitext(os.path.basename(self.image_path))[0])
+            output_dir = os.path.join("output")
             os.makedirs(output_dir, exist_ok=True)
             
             if save_rectangles:
@@ -374,7 +375,7 @@ class ImageAnnotator(QWidget):
                 
                 # Create and save rectangle mask
                 rect_mask = self.sam_wrapper.create_rectangle_mask(best_mask.shape, bboxes)
-                rect_mask_path = os.path.join(output_dir, "mask_rectangles.png")
+                rect_mask_path = os.path.join(output_dir, f"{image_name}_mask.png")
                 cv2.imwrite(rect_mask_path, (rect_mask * 255).astype(np.uint8))
                 print(f"[SAVED] Rectangle mask saved to {rect_mask_path}")
                 
@@ -383,7 +384,7 @@ class ImageAnnotator(QWidget):
                 for box in bboxes:
                     pts = np.array(box, dtype=np.int32).reshape((-1, 1, 2))
                     cv2.polylines(vis_img, [pts], isClosed=True, color=(0, 255, 0), thickness=2)
-                vis_path = os.path.join(output_dir, "visualization.png")
+                vis_path = os.path.join(output_dir, f"{image_name}_vis.png")
                 cv2.imwrite(vis_path, vis_img)
                 print(f"[SAVED] Visualization saved to {vis_path}")
                 
